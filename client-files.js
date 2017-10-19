@@ -6,6 +6,7 @@ const startString = 'FILES';
 const bad = 'DEC';
 const good = 'ACK';
 const directories = process.argv.slice(2);
+const files = [];
 
 const client = new net.Socket();
 client.setEncoding('utf-8');
@@ -25,6 +26,12 @@ client.on("data", function(data) {
     if(data === bad) {
         client.destroy();
     }
+    if (data === "ФАЙЛ ПРИНЯЛ" && files.length !== 0) {
+        sendFilesToServer();
+    }
+    if (files.length === 0) {
+        client.end();
+    }
 })
 
 client.on("close", function() {
@@ -41,12 +48,10 @@ function ReadFilesInDirectory(dirPath) {
         }
     })
 }
-
 function sendFilesToServer() {
-    for (let i = 0; i < files.length; ++i)
-    {
-        let filePath = files.pop();
-        client.write(fs.readFileSync(filePath));
-    }
-    client.destroy();
+    let file = files.shift();
+    console.log(file);
+    console.log(fs.readFileSync(file));
+    console.log("--------------");
+    client.write(fs.readFileSync(file));
 }
