@@ -25,11 +25,15 @@ client.connect({port: port, host: '127.0.0.1'}, (err) => {
 });
 
 client.on('data', (data) => {
-  if (data === bad)
+  if (data === bad){
+    console.log("Not connected");
     client.destroy();
+  }
+    
   if (data === good)
     sendQuestion();
-  else {
+
+  if (data !== good && data !== bad) {
     let qst = questions[index];
     let answer = qst.good;
     console.log(`\nQuestion: ${qst.question}`);
@@ -37,7 +41,7 @@ client.on('data', (data) => {
     console.log(`---Server's answer: ${data}`);
     console.log('---Result: ' + (data === answer ? 'Right answer!': 'Wrong answer!'));
     sendQuestion();
-    }
+  }
 });
 
 client.on('close', function () {

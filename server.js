@@ -7,7 +7,7 @@ const filesString = 'FILES'
 const good = 'ACK';
 const bad = 'DEC';
 const saveDirectory = process.env.DIRECTORY_FOR_SAVING_FILES || 'D:/3-ий курс/ПСКП/Мои лабораторные/cwp-03/results';
-const maxConnections = process.env.MAX_NUMBER_OF_CONNECTIONS || 5;
+const maxConnections = process.env.MAX_NUMBER_OF_CONNECTIONS || 3;
 let seed = 0;
 let questions = [];
 let clientModes = []; // массив, хранящий режим
@@ -16,7 +16,12 @@ let filename = 1;
 let numberOfClients = 0;
 
 const server = net.createServer((client) => {
-  console.log(++numberOfClients);
+  if (++numberOfClients > maxConnections) {
+      console.log("Превышено количество подключений!!!")
+      client.write(bad);
+      return;
+  }
+  console.log(numberOfClients);
   console.log('Client connected');
   client.setEncoding('utf8');
 
